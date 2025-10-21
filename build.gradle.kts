@@ -59,3 +59,12 @@ checkstyle {
 	// Usá 'config' (no configFile) para evitar deprecations en Gradle modernos
 	config = resources.text.fromFile("config/checkstyle/checkstyle.xml")
 }
+
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.springframework.security:spring-security-oauth2-jose")
+	implementation("org.springframework.security:spring-security-oauth2-core")
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
