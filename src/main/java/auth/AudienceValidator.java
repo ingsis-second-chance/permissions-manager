@@ -13,7 +13,6 @@ public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
         this.audience = audience;
     }
 
-    //chequear audiencia
     @Override
     public OAuth2TokenValidatorResult validate(Jwt jwt) {
         OAuth2Error error = new OAuth2Error("invalid_token", "The required audience is missing", null);
