@@ -70,6 +70,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
         return jwtDecoder;
     }
 
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
