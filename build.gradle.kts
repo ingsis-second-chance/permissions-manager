@@ -1,4 +1,3 @@
-
 plugins {
 	java
 	id("org.springframework.boot") version "3.5.6"
@@ -6,7 +5,7 @@ plugins {
 	jacoco
 	id("com.diffplug.spotless") version "6.25.0"
 	checkstyle
-    kotlin("jvm")
+	kotlin("jvm")
 }
 
 group = "ingsis"
@@ -20,29 +19,46 @@ java {
 repositories { mavenCentral() }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")        // Web clásico
+	// Core
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
+	// Seguridad / JWT (JOSE entra transitivo por este starter)
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+	// DB
+	runtimeOnly("org.postgresql:postgresql")
+
+	// Kotlin y Lombok (si usás)
+	implementation(kotlin("stdlib-jdk8"))
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
-	runtimeOnly("org.postgresql:postgresql")
-
+	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.testcontainers:junit-jupiter:1.20.1")
 	testImplementation("org.testcontainers:postgresql:1.20.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
-tasks.withType<Test> { useJUnitPlatform() }
+/* -------- JUnit -------- */
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
 
 /* -------- Coverage (JaCoCo) -------- */
-jacoco { toolVersion = "0.8.12" }
+jacoco {
+	toolVersion = "0.8.12"
+}
 tasks.jacocoTestReport {
 	dependsOn(tasks.test)
-	reports { xml.required.set(true); html.required.set(true) }
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
 }
 
 /* -------- Formatter (Spotless) -------- */
@@ -56,14 +72,5 @@ spotless {
 /* -------- Linter (Checkstyle) -------- */
 checkstyle {
 	toolVersion = "10.18.1"
-	// Usá 'config' (no configFile) para evitar deprecations en Gradle modernos
 	config = resources.text.fromFile("config/checkstyle/checkstyle.xml")
-}
-
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-	implementation("org.springframework.security:spring-security-oauth2-jose")
-	implementation("org.springframework.security:spring-security-oauth2-core")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
