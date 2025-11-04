@@ -2,11 +2,11 @@ services:
   postgres:
     image: postgres:16
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: permsdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: permsdb
     ports:
-    - "5433:5432"     # externo:interno (evitar choque si corrés varios a la vez)
+      - "5435:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d permsdb"]
       interval: 5s
@@ -24,6 +24,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
     depends_on:
       postgres:
-          condition: service_healthy
+        condition: service_healthy
     ports:
-      - "8083:8080"
+      - "8083:8083"
