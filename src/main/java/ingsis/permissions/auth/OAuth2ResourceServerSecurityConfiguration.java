@@ -19,28 +19,39 @@ import org.springframework.web.cors.*;
 @Profile("!test")
 public class OAuth2ResourceServerSecurityConfiguration {
 
-  @Value("${auth0.audience}") private String audience;
-  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") private String issuer;
+  @Value("${auth0.audience}")
+  private String audience;
+
+  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+  private String issuer;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(withDefaults())
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/ping", "/actuator/**",
-                            "/swagger-ui", "/swagger-ui/*",
-                            "/v3/api-docs", "/v3/api-docs/*").permitAll()
-
-                    .requestMatchers(HttpMethod.GET, "/snippets/**").hasAuthority("SCOPE_read:snippets")
-                    .requestMatchers(HttpMethod.POST, "/snippets/**").hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.DELETE, "/snippets/**").hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.PUT, "/snippets/**").hasAuthority("SCOPE_write:snippets")
-                    .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth -> oauth
-                    .jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtAuthConverter()))
-            );
+    http.csrf(AbstractHttpConfigurer::disable)
+        .cors(withDefaults())
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(
+                        "/",
+                        "/ping",
+                        "/actuator/**",
+                        "/swagger-ui",
+                        "/swagger-ui/*",
+                        "/v3/api-docs",
+                        "/v3/api-docs/*")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/snippets/**")
+                    .hasAuthority("SCOPE_read:snippets")
+                    .requestMatchers(HttpMethod.POST, "/snippets/**")
+                    .hasAuthority("SCOPE_write:snippets")
+                    .requestMatchers(HttpMethod.DELETE, "/snippets/**")
+                    .hasAuthority("SCOPE_write:snippets")
+                    .requestMatchers(HttpMethod.PUT, "/snippets/**")
+                    .hasAuthority("SCOPE_write:snippets")
+                    .anyRequest()
+                    .authenticated())
+        .oauth2ResourceServer(
+            oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtAuthConverter())));
 
     return http.build();
   }
@@ -58,8 +69,8 @@ public class OAuth2ResourceServerSecurityConfiguration {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration cfg = new CorsConfiguration();
     cfg.setAllowedOrigins(List.of("http://localhost:5173"));
-    cfg.setAllowedMethods(List.of("GET","PUT","POST","DELETE","OPTIONS"));
-    cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));
+    cfg.setAllowedMethods(List.of("GET", "PUT", "POST", "DELETE", "OPTIONS"));
+    cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     cfg.setAllowCredentials(true);
     UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
     src.registerCorsConfiguration("/**", cfg);
