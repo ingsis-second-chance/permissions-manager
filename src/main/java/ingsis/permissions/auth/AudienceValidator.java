@@ -1,4 +1,4 @@
-package auth;
+package ingsis.permissions.auth;
 
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
