@@ -23,17 +23,27 @@ RUN ./gradlew --no-daemon clean bootJar -x test
 # ========== Runtime stage ==========
 FROM eclipse-temurin:17-jre AS runtime
 WORKDIR /app
+
 # (opcional) user no-root
 RUN useradd -r -s /bin/false appuser
 
-# Copiamos el jar
+# Copiamos el jar de la build stage
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# Exponé el puerto interno de Spring. (Afuera lo mapea compose)
+# Copiamos el agente de New Relic desde el volumen que montás en infra
+# (Docker Compose ya monta ./newrelic:/newrelic)
+COPY ./newrelic /newrelic
+
+# Exponé el puerto interno de Spring
 EXPOSE 8080
 
 # Variables por defecto (se pueden overridear en compose)
 ENV SPRING_PROFILES_ACTIVE=docker
+ENV NEW_RELIC_APP_NAME=permissions-manager
+ENV NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
+ENV JAVA_TOOL_OPTIONS="-javaagent:/newrelic/newrelic.jar"
 
 USER appuser
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+# ENTRYPOINT modificado para incluir el agente
+ENTRYPOINT ["java", "-javaagent:/newrelic/newrelic.jar", "-jar", "/app/app.jar"]
