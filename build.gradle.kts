@@ -45,6 +45,7 @@ dependencies {
 
 	implementation("com.auth0:java-jwt:4.4.0")
 
+	testImplementation("com.h2database:h2")
 }
 
 /* -------- JUnit -------- */
