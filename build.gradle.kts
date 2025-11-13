@@ -42,6 +42,9 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter:1.20.1")
 	testImplementation("org.testcontainers:postgresql:1.20.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	implementation("com.auth0:java-jwt:4.4.0")
+
 }
 
 /* -------- JUnit -------- */
