@@ -39,6 +39,8 @@ EXPOSE 8080
 
 # Variables por defecto (se pueden overridear en compose)
 ENV SPRING_PROFILES_ACTIVE=docker
+ENV NEW_RELIC_APP_NAME=permissions-manager
+ENV NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
 ENV JAVA_TOOL_OPTIONS="-javaagent:/newrelic/newrelic.jar"
 
 USER appuser

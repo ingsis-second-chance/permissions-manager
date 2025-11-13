@@ -25,8 +25,8 @@ server:
 # ===== Auth0 =====
 auth0:
   # usa valores de entorno si existen, o defaults seguros si no (para CI/tests)
-  issuer: https://${AUTH_SERVER_URI:dev-local.us.auth0.com}/
-  audience: ${AUTH0_AUDIENCE:https://snippet-api}
+  issuer: https://${AUTH_SERVER_URI}/
+  audience: ${AUTH0_AUDIENCE}
 
 # ===== Actuator =====
 management:
