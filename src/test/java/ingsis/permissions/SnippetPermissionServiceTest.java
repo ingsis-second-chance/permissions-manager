@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 
 import ingsis.permissions.DTO.Response;
 import ingsis.permissions.DTO.ShareSnippetDTO;
+import ingsis.permissions.DTO.SnippetPermissionGrantResponse;
 import ingsis.permissions.DTO.UserDTO;
 import ingsis.permissions.DTO.UserInfo;
-import ingsis.permissions.DTO.SnippetPermissionGrantResponse;
 import ingsis.permissions.Services.SnippetPermissionService;
 import ingsis.permissions.entities.GrantType;
 import ingsis.permissions.entities.SnippetPermission;
@@ -31,14 +31,11 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 public class SnippetPermissionServiceTest {
 
-  @Autowired
-  private SnippetPermissionRepository snippetPermissionRepository;
+  @Autowired private SnippetPermissionRepository snippetPermissionRepository;
 
-  @Autowired
-  private SnippetPermissionService snippetPermissionService;
+  @Autowired private SnippetPermissionService snippetPermissionService;
 
-  @MockBean
-  private UserService userService;
+  @MockBean private UserService userService;
 
   private String mockToken;
 
@@ -47,7 +44,7 @@ public class SnippetPermissionServiceTest {
     // JWT de mentira por si alguna parte del código lo usa indirectamente
     String header = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}";
     String payload =
-            "{\"sub\":\"mockUserId\",\"username\":\"mockUsername\",\"role\":\"user\",\"iat\":1609459200}";
+        "{\"sub\":\"mockUserId\",\"username\":\"mockUsername\",\"role\":\"user\",\"iat\":1609459200}";
     String signature = "mockSignature";
 
     mockToken = base64Encode(header) + "." + base64Encode(payload) + "." + signature;
@@ -86,18 +83,18 @@ public class SnippetPermissionServiceTest {
   @Test
   void saveRelation() {
     Response<String> response =
-            snippetPermissionService.saveRelation("snippetId1", "userId", GrantType.WRITE);
+        snippetPermissionService.saveRelation("snippetId1", "userId", GrantType.WRITE);
 
     assertEquals("Relationship saved", response.getData());
     assertEquals(
-            "snippetId1",
-            snippetPermissionRepository
-                    .findBySnippetIdAndUserId("snippetId1", "userId")
-                    .get()
-                    .getSnippetId());
+        "snippetId1",
+        snippetPermissionRepository
+            .findBySnippetIdAndUserId("snippetId1", "userId")
+            .get()
+            .getSnippetId());
 
     Response<String> response2 =
-            snippetPermissionService.saveRelation("snippetId1", "userId", GrantType.WRITE);
+        snippetPermissionService.saveRelation("snippetId1", "userId", GrantType.WRITE);
 
     assertEquals(409, response2.getError().code());
   }
@@ -123,12 +120,12 @@ public class SnippetPermissionServiceTest {
   @Transactional
   void testGetSnippetGrants() {
     Response<List<SnippetPermissionGrantResponse>> response =
-            snippetPermissionService.getSnippetGrants("userId", "ALL");
+        snippetPermissionService.getSnippetGrants("userId", "ALL");
 
     assertEquals(1, response.getData().size());
 
     Response<List<SnippetPermissionGrantResponse>> responseWrite =
-            snippetPermissionService.getSnippetGrants("userId", "WRITE");
+        snippetPermissionService.getSnippetGrants("userId", "WRITE");
 
     assertEquals(1, responseWrite.getData().size());
   }
@@ -148,8 +145,8 @@ public class SnippetPermissionServiceTest {
 
     assertEquals("Relationship deleted", response.getData());
     assertEquals(
-            Optional.empty(),
-            snippetPermissionRepository.findBySnippetIdAndUserId("snippetId", "userId"));
+        Optional.empty(),
+        snippetPermissionRepository.findBySnippetIdAndUserId("snippetId", "userId"));
   }
 
   @Test
@@ -159,8 +156,8 @@ public class SnippetPermissionServiceTest {
 
     assertEquals("All relationships deleted", response.getData());
     assertEquals(
-            Optional.empty(),
-            snippetPermissionRepository.findBySnippetIdAndUserId("snippetId", "userId"));
+        Optional.empty(),
+        snippetPermissionRepository.findBySnippetIdAndUserId("snippetId", "userId"));
   }
 
   @Test
@@ -171,10 +168,10 @@ public class SnippetPermissionServiceTest {
     shareSnippetDTO.setUsername("username2");
 
     when(userService.getAllUsers())
-            .thenReturn(List.of(new UserDTO("userId2", "email2", "username2")));
+        .thenReturn(List.of(new UserDTO("userId2", "email2", "username2")));
 
     Response<String> response =
-            snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
+        snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
 
     assertEquals("Snippet shared", response.getData());
     assertNotNull(snippetPermissionRepository.findBySnippetIdAndUserId("snippetId", "userId2"));
@@ -184,7 +181,7 @@ public class SnippetPermissionServiceTest {
   void testSaveRelation_AlreadyExists() {
     snippetPermissionService.saveRelation("snippetId", "userId", GrantType.WRITE);
     Response<String> response =
-            snippetPermissionService.saveRelation("snippetId", "userId", GrantType.WRITE);
+        snippetPermissionService.saveRelation("snippetId", "userId", GrantType.WRITE);
     assertEquals(409, response.getError().code());
   }
 
@@ -197,7 +194,7 @@ public class SnippetPermissionServiceTest {
   @Test
   void testDeleteRelation_NotFound() {
     Response<String> response =
-            snippetPermissionService.deleteRelation("nonExistentSnippetId", "userId");
+        snippetPermissionService.deleteRelation("nonExistentSnippetId", "userId");
     assertEquals(404, response.getError().code());
   }
 
@@ -214,9 +211,9 @@ public class SnippetPermissionServiceTest {
     shareSnippetDTO.setUsername("username2");
 
     Response<String> response =
-            snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
+        snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
     Response<String> response2 =
-            snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
+        snippetPermissionService.saveShareRelation(shareSnippetDTO, "userId");
 
     assertEquals(404, response2.getError().code());
   }
@@ -224,7 +221,7 @@ public class SnippetPermissionServiceTest {
   @Test
   void testHasNoAccess() {
     Response<Boolean> response =
-            snippetPermissionService.hasAccess("nonExistentSnippetId", "userId");
+        snippetPermissionService.hasAccess("nonExistentSnippetId", "userId");
     assertEquals(404, response.getError().code());
   }
 
