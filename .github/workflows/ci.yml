@@ -29,18 +29,5 @@ jobs:
       - name: Checkstyle (linter)
         run: ./gradlew checkstyleMain checkstyleTest --no-daemon
 
-      - name: Build, Test & Coverage
-        run: ./gradlew clean test jacocoTestReport --no-daemon
-
-      - name: Upload JaCoCo report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: build/reports/jacoco/test/html
-
-      - name: Upload JUnit test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: junit-test-results
-          path: build/test-results/test
+      - name: Build & Test
+        run: ./gradlew clean test --no-daemon
