@@ -28,8 +28,9 @@ public class SnippetPermissionService {
     log.info("hasAccess was called");
     Optional<SnippetPermission> snippetPermission =
         snippetPermissionRepository.findBySnippetIdAndUserId(snippetId, userId);
-    if (snippetPermission.isEmpty())
+    if (snippetPermission.isEmpty()) {
       return Response.withError(new Error(404, "Snippet permission not found"));
+    }
     return Response.withData(true);
   }
 
@@ -55,8 +56,9 @@ public class SnippetPermissionService {
   public Response<Boolean> canEdit(String snippetId, String userId) {
     Optional<SnippetPermission> snippetPermission =
         snippetPermissionRepository.findBySnippetIdAndUserId(snippetId, userId);
-    if (snippetPermission.isEmpty())
+    if (snippetPermission.isEmpty()) {
       return Response.withError(new Error(404, "Snippet permission not found"));
+    }
     boolean canEdit = snippetPermission.get().getGrantType().equals(GrantType.WRITE);
     return Response.withData(canEdit);
   }
@@ -64,8 +66,9 @@ public class SnippetPermissionService {
   public Response<String> getSnippetAuthor(String snippetId) {
     Optional<SnippetPermission> snippetPermission =
         snippetPermissionRepository.findBySnippetIdAndGrantType(snippetId, GrantType.WRITE);
-    if (snippetPermission.isEmpty())
+    if (snippetPermission.isEmpty()) {
       return Response.withError(new Error(404, "Snippet permission not found"));
+    }
     String userId = snippetPermission.get().getUserId();
     try {
       String author = userService.getUsernameFromUserId(userId);
@@ -113,8 +116,9 @@ public class SnippetPermissionService {
   public Response<String> deleteRelation(String snippetId, String userId) {
     Optional<SnippetPermission> snippetPermissionOpt =
         snippetPermissionRepository.findBySnippetIdAndUserId(snippetId, userId);
-    if (snippetPermissionOpt.isEmpty())
+    if (snippetPermissionOpt.isEmpty()) {
       return Response.withError(new Error(404, "Snippet permission not found"));
+    }
     try {
       snippetPermissionRepository.delete(snippetPermissionOpt.get());
       return Response.withData("Relationship deleted");
@@ -126,8 +130,9 @@ public class SnippetPermissionService {
   public Response<String> deleteAllRelations(String snippetId) {
     List<SnippetPermission> snippetPermissions =
         snippetPermissionRepository.findAllBySnippetId(snippetId);
-    if (snippetPermissions.isEmpty())
+    if (snippetPermissions.isEmpty()) {
       return Response.withError(new Error(404, "Snippet permissions not found"));
+    }
     try {
       snippetPermissionRepository.deleteAll(snippetPermissions);
       return Response.withData("All relationships deleted");
@@ -138,7 +143,9 @@ public class SnippetPermissionService {
 
   public Response<String> saveShareRelation(ShareSnippetDTO shareSnippetDTO, String userId) {
     Response<Boolean> canEdit = canEdit(shareSnippetDTO.getSnippetId(), userId);
-    if (canEdit.isError()) return Response.withError(canEdit.getError());
+    if (canEdit.isError()) {
+      return Response.withError(canEdit.getError());
+    }
     if (!canEdit.getData()) {
       return Response.withError(new Error(403, "Share Access Denied"));
     }
@@ -151,7 +158,9 @@ public class SnippetPermissionService {
     try {
       Response<String> response =
           saveRelation(shareSnippetDTO.getSnippetId(), userIdToShare, GrantType.READ);
-      if (response.isError()) return response;
+      if (response.isError()) {
+        return response;
+      }
     } catch (Exception e) {
       return Response.withError(new Error(500, e.getMessage()));
     }
