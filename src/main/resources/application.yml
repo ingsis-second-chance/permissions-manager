@@ -3,9 +3,9 @@ spring:
     name: permission-manager
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/snippetdb
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/snippetdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
 
   jpa:
     hibernate:
@@ -17,18 +17,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://dev-vp3w4qxf5usvluez.us.auth0.com/
-
+          issuer-uri: https://${AUTH_SERVER_URI}
 server:
-  port: 8083
+  port: ${SERVER_PORT:8083}
 
-# ===== Auth0 =====
 auth0:
-  # usa valores de entorno si existen, o defaults seguros si no (para CI/tests)
   issuer: https://${AUTH_SERVER_URI}/
   audience: ${AUTH0_AUDIENCE}
 
-# ===== Actuator =====
 management:
   endpoints:
     web:
@@ -38,14 +34,19 @@ management:
     health:
       show-details: always
 
-# ===== Perfil Docker =====
 ---
+# ===== Docker profile =====
 spring:
   config:
     activate:
       on-profile: docker
 
   datasource:
-    url: jdbc:postgresql://postgres:5432/snippetdb
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
