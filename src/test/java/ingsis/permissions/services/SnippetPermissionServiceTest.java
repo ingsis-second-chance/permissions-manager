@@ -1,4 +1,4 @@
-package ingsis.permissions;
+package ingsis.permissions.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -10,6 +10,7 @@ import ingsis.permissions.DTO.SnippetPermissionGrantResponse;
 import ingsis.permissions.DTO.UserDTO;
 import ingsis.permissions.DTO.UserInfo;
 import ingsis.permissions.Services.SnippetPermissionService;
+import ingsis.permissions.TestSecurityConfig;
 import ingsis.permissions.entities.GrantType;
 import ingsis.permissions.entities.SnippetPermission;
 import ingsis.permissions.repositories.SnippetPermissionRepository;

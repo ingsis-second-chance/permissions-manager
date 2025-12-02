@@ -1,5 +1,5 @@
 // java
-package ingsis.permissions;
+package ingsis.permissions.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -10,7 +10,7 @@ import ingsis.permissions.DTO.Error;
 import ingsis.permissions.DTO.Response;
 import ingsis.permissions.DTO.ShareSnippetDTO;
 import ingsis.permissions.Services.SnippetPermissionService;
-import ingsis.permissions.controllers.SnippetPermissionController;
+import ingsis.permissions.TestSecurityConfig;
 import ingsis.permissions.entities.GrantType;
 import java.util.List;
 import java.util.Map;
