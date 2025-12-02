@@ -41,7 +41,6 @@ jobs:
     env:
       SSH_KEY: ${{ github.ref_name == 'main' && secrets.SSH_KEY_PROD || secrets.SSH_KEY_DEV }}
       VM_NAME: ${{ github.ref_name == 'main' && 'vm-prod' || 'vm-dev' }}
-      AZURE_RG: ${{ github.ref_name == 'main' && secrets.AZURE_RG_PROD || secrets.AZURE_RG_DEV }}
 
     steps:
       - name: Checkout code
@@ -63,14 +62,13 @@ jobs:
 
       - name: Start VM
         run: |
-          az vm start --resource-group ${{ env.AZURE_RG }} --name ${{ env.VM_NAME }} --no-wait
-          sleep 60 # Esperar un tiempo prudencial para que el SSH esté disponible
+          az vm start --resource-group ${{ secrets.AZURE_RG }} --name ${{ env.VM_NAME }}
         shell: bash
 
       - name: Deploy to Azure VM (prod)
         if: github.ref_name == 'main'
         run: |
-          ssh -v -o StrictHostKeyChecking=no ingsis@${{ secrets.VM_PROD_IP }} << ENDSSH
+          ssh -v -o StrictHostKeyChecking=no ${{ secrets.AZURE_USER }}@${{ secrets.VM_PROD_IP }} << ENDSSH
           cd infra
           docker compose -f docker-compose.prod.yml down permissions-manager
           docker compose -f docker-compose.prod.yml pull permissions-manager
@@ -80,7 +78,7 @@ jobs:
       - name: Deploy to Azure VM (dev)
         if: github.ref_name != 'main'
         run: |
-          ssh -v -o StrictHostKeyChecking=no ingsis@${{ secrets.VM_DEV_IP }} << ENDSSH
+          ssh -v -o StrictHostKeyChecking=no ${{ secrets.AZURE_USER }}@${{ secrets.VM_DEV_IP }} << ENDSSH
           cd infra
           docker compose -f docker-compose.dev.yml down permissions-manager
           docker compose -f docker-compose.dev.yml pull permissions-manager
@@ -90,5 +88,5 @@ jobs:
       - name: Stop VM
         if: always() # Asegura que la VM se apague incluso si el despliegue falla
         run: |
-          az vm stop --resource-group ${{ env.AZURE_RG }} --name ${{ env.VM_NAME }} --no-wait
+          az vm deallocate --resource-group ${{ secrets.AZURE_RG }} --name ${{ env.VM_NAME }}
         shell: bash
