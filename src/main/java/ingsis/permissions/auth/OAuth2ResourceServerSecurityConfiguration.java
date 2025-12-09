@@ -2,7 +2,6 @@ package ingsis.permissions.auth;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
@@ -63,17 +62,5 @@ public class OAuth2ResourceServerSecurityConfiguration {
     OAuth2TokenValidator<Jwt> iss = JwtValidators.createDefaultWithIssuer(issuer);
     dec.setJwtValidator(new DelegatingOAuth2TokenValidator<>(iss, aud));
     return dec;
-  }
-
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration cfg = new CorsConfiguration();
-    cfg.setAllowedOrigins(List.of("http://localhost:5173"));
-    cfg.setAllowedMethods(List.of("GET", "PUT", "POST", "DELETE", "OPTIONS"));
-    cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-    cfg.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
-    src.registerCorsConfiguration("/**", cfg);
-    return src;
   }
 }
