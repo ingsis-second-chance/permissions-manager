@@ -102,7 +102,7 @@ public class UserService {
             + "&client_secret="
             + System.getenv("AUTH0_CLIENT_SECRET")
             + "&audience="
-            + System.getenv("AUTH0_AUDIENCE");
+            + System.getenv("AUTH0_AUDIENCE_API");
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
 
