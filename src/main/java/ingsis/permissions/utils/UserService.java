@@ -98,9 +98,9 @@ public class UserService {
     String body =
         "grant_type=client_credentials"
             + "&client_id="
-            + System.getenv("AUTH_CLIENT_ID")
+            + System.getenv("AUTH0_CLIENT_ID")
             + "&client_secret="
-            + System.getenv("AUTH_CLIENT_SECRET")
+            + System.getenv("AUTH0_CLIENT_SECRET")
             + "&audience="
             + System.getenv("AUTH0_AUDIENCE_API");
 
