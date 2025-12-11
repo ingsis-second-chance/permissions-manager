@@ -16,6 +16,7 @@ services:
       retries: 10
 
   permissions-manager:
+    container_name: permissions-manager
     build: .
     depends_on:
       - postgres
@@ -23,6 +24,13 @@ services:
       - .env
     ports:
       - "8083:8083"
+    networks:
+      - default
+      - microservices-network
+
+networks:
+  microservices-network:
+    external: true
 
 volumes:
   postgres-data:

@@ -49,8 +49,9 @@ public class OAuth2ResourceServerSecurityConfiguration {
                     .hasAuthority("SCOPE_write:snippets")
                     .anyRequest()
                     .authenticated())
-        .oauth2ResourceServer(
-            oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtAuthConverter())));
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+        .cors(withDefaults())
+        .csrf(AbstractHttpConfigurer::disable);
 
     return http.build();
   }

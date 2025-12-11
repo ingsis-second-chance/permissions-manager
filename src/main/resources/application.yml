@@ -17,13 +17,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AUTH0_ISSUER}
+          issuer-uri: ${AUTH0_SERVER_URI}
+          client-id: ${AUTH0_CLIENT_ID}
+          client-secret: ${AUTH0_CLIENT_SECRET}
 
 server:
   port: 8083
 
 auth0:
-  issuer: https://${AUTH_SERVER_URI}/
   audience: ${AUTH0_AUDIENCE}
 
 management:
