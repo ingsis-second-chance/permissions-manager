@@ -26,33 +26,35 @@ public class OAuth2ResourceServerSecurityConfiguration {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .cors(withDefaults())
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers(
-                        "/",
-                        "/ping",
-                        "/actuator/**",
-                        "/swagger-ui",
-                        "/swagger-ui/*",
-                        "/v3/api-docs",
-                        "/v3/api-docs/*")
+    http.authorizeHttpRequests(
+            authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers("/")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/snippets/**")
+                    .requestMatchers(HttpMethod.GET, "/snippets")
                     .hasAuthority("SCOPE_read:snippets")
-                    .requestMatchers(HttpMethod.POST, "/snippets/**")
+                    .requestMatchers(HttpMethod.GET, "/snippets/*")
+                    .hasAuthority("SCOPE_read:snippets")
+                    .requestMatchers(HttpMethod.POST, "/snippets")
                     .hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.DELETE, "/snippets/**")
+                    .requestMatchers(HttpMethod.DELETE, "/snippets/*")
                     .hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.PUT, "/snippets/**")
-                    .hasAuthority("SCOPE_write:snippets")
+                    .requestMatchers(HttpMethod.GET, "/user/*")
+                    .hasAuthority("SCOPE_read:snippets")
+                    .requestMatchers(HttpMethod.GET, "/user")
+                    .hasAuthority("SCOPE_read:snippets")
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/swagger-ui/*")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/v3/api-docs")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/v3/api-docs/*")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
-        .cors(withDefaults())
         .csrf(AbstractHttpConfigurer::disable);
-
     return http.build();
   }
 
