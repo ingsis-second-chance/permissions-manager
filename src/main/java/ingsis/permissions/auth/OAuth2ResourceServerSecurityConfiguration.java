@@ -27,22 +27,15 @@ public class OAuth2ResourceServerSecurityConfiguration {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/")
+            auth ->
+                auth.requestMatchers("/")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/snippets")
+                    .requestMatchers(HttpMethod.GET, "/snippets/**")
                     .hasAuthority("SCOPE_read:snippets")
-                    .requestMatchers(HttpMethod.GET, "/snippets/*")
-                    .hasAuthority("SCOPE_read:snippets")
-                    .requestMatchers(HttpMethod.POST, "/snippets")
+                    .requestMatchers(HttpMethod.POST, "/snippets/**")
                     .hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.DELETE, "/snippets/*")
+                    .requestMatchers(HttpMethod.DELETE, "/snippets/**")
                     .hasAuthority("SCOPE_write:snippets")
-                    .requestMatchers(HttpMethod.GET, "/user/*")
-                    .hasAuthority("SCOPE_read:snippets")
-                    .requestMatchers(HttpMethod.GET, "/user")
-                    .hasAuthority("SCOPE_read:snippets")
                     .requestMatchers(HttpMethod.GET, "/swagger-ui")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/swagger-ui/*")
