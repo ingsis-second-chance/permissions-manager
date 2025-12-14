@@ -25,7 +25,7 @@ public class SnippetPermissionService {
   private final Logger log = LoggerFactory.getLogger(SnippetPermissionService.class);
 
   public Response<Boolean> hasAccess(String snippetId, String userId) {
-    log.info("hasAccess was called");
+    log.info("hasAccess was called with snippetId: {} and userId: {}", snippetId, userId);
     Optional<SnippetPermission> snippetPermission =
         snippetPermissionRepository.findBySnippetIdAndUserId(snippetId, userId);
     if (snippetPermission.isEmpty()) {
